@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZENTER - App Estoica</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .phone-mockup {
+            width: 100%;
+            max-width: 390px;
+            height: 844px;
+            background: #000;
+            border-radius: 50px;
+            padding: 15px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #0d0d0d 0%, #1a1a1a 100%);
+            border-radius: 40px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 60px 24px 100px;
+            position: relative;
+        }
+
+        /* Animated smoke effect */
+        .smoke {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            background: radial-gradient(ellipse at bottom, rgba(80, 80, 80, 0.1) 0%, transparent 70%);
+            animation: smoke 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes smoke {
+            0%, 100% { opacity: 0.3; transform: translateY(0); }
+            50% { opacity: 0.5; transform: translateY(-20px); }
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .app-title {
+            font-family: Georgia, serif;
+            font-size: 36px;
+            font-weight: 300;
+            color: #fff;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+        }
+
+        .date {
+            font-size: 14px;
+            color: #888;
+            font-weight: 300;
+        }
+
+        .timeline {
+            margin-bottom: 30px;
+        }
+
+        .timeline-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .time {
+            font-family: Georgia, serif;
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .activity {
+            font-size: 18px;
+            color: #fff;
+            font-weight: 300;
+        }
+
+        .quote-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .quote-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+
+        .quote-text {
+            font-family: Georgia, serif;
+            font-size: 20px;
+            color: #fff;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .book-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .book-cover {
+            width: 60px;
+            height: 80px;
+            background: linear-gradient(135deg, #8b7355 0%, #5c4a3a 100%);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .book-info {
+            flex: 1;
+        }
+
+        .book-title {
+            font-size: 15px;
+            color: #fff;
+            margin-bottom: 4px;
+            font-weight: 400;
+        }
+
+        .book-author {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .fab {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #000;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 12px 32px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 340px;
+            width: 90%;
+        }
+
+        .modal-title {
+            font-family: Georgia, serif;
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input[type="time"],
+        input[type="text"] {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-add {
+            background: #fff;
+            color: #000;
+        }
+
+        .btn-add:hover {
+            background: #e0e0e0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup">
+        <div class="screen">
+            <div class="smoke"></div>
+            
+            <div class="header">
+                <div class="app-title">ZENTER</div>
+                <div class="date">Domingo, 8 Febrero 2026</div>
+            </div>
+
+            <div class="timeline" id="timeline">
+                <div class="timeline-item">
+                    <div class="time">7:00 AM</div>
+                    <div class="activity">Training</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="time">8:50 AM</div>
+                    <div class="activity">Read The Daily Stoic</div>
+                </div>
+            </div>
+
+            <div class="quote-card">
+                <div class="quote-label">Cita Estoica</div>
+                <div class="quote-text">"The obstacle is the way"</div>
+            </div>
+
+            <div class="book-card">
+                <div class="book-cover">📖</div>
+                <div class="book-info">
+                    <div class="book-title">Meditations</div>
+                    <div class="book-author">Marcus Aurelius</div>
+                </div>
+            </div>
+
+            <div class="fab" onclick="openModal()">+</div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-title">Nueva Actividad</div>
+            
+            <div class="input-group">
+                <label class="input-label">Hora</label>
+                <input type="time" id="timeInput" value="09:00">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Actividad</label>
+                <input type="text" id="activityInput" placeholder="Ej: Meditación">
+            </div>
+
+            <div class="button-group">
+                <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button class="btn-add" onclick="addActivity()">Agregar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.getElementById('timeInput').value = '09:00';
+            document.getElementById('activityInput').value = '';
+        }
+
+        function addActivity() {
+            const time = document.getElementById('timeInput').value;
+            const activity = document.getElementById('activityInput').value;
+
+            if (activity.trim() === '') {
+                alert('Por favor ingresa una actividad');
+                return;
+            }
+
+            const timeline = document.getElementById('timeline');
+            const newItem = document.createElement('div');
+            newItem.className = 'timeline-item';
+            
+            const timeStr = time.split(':')[0] + ':' + time.split(':')[1];
+            const hour = parseInt(time.split(':')[0]);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+            
+            newItem.innerHTML = `
+                <div class="time">${displayHour}:${time.split(':')[1]} ${ampm}</div>
+                <div class="activity">${activity}</div>
+            `;
+
+            timeline.appendChild(newItem);
+            closeModal();
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
